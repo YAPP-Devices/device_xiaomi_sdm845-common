@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-#define LOG_TAG "android.hardware.biometrics.fingerprint@2.1-service.xiaomi_sdm845"
+#define LOG_TAG "android.hardware.biometrics.fingerprint@2.3-service.xiaomi_sdm845"
 
 #include <android/log.h>
 #include <hidl/HidlTransportSupport.h>
@@ -29,6 +29,31 @@ using android::hardware::joinRpcThreadpool;
 // Generated HIDL files
 using android::hardware::biometrics::fingerprint::V2_3::IBiometricsFingerprint;
 using android::hardware::biometrics::fingerprint::V2_3::implementation::BiometricsFingerprint;
+
+using android::status_t;
+
+status_t BiometricsFingerprint::registerAsSystemService() {
+    status_t ret = 0;
+
+    ret = IBiometricsFingerprint::registerAsService();
+    if (ret != 0) {
+        ALOGE("Failed to register IBiometricsFingerprint (%d)", ret);
+        goto fail;
+    } else {
+        ALOGI("Successfully registered IBiometricsFingerprint");
+    }
+
+    ret = IXiaomiFingerprint::registerAsService();
+    if (ret != 0) {
+        ALOGE("Failed to register IXiaomiFingerprint (%d)", ret);
+        goto fail;
+    } else {
+        ALOGI("Successfully registered IXiaomiFingerprint");
+    }
+
+fail:
+    return ret;
+}
 
 int main() {
     android::sp<IBiometricsFingerprint> service = BiometricsFingerprint::getInstance();
