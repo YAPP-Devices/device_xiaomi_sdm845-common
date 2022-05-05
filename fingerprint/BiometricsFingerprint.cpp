@@ -391,26 +391,6 @@ void BiometricsFingerprint::notify(const fingerprint_msg_t* msg) {
 }
 
 Return<bool> BiometricsFingerprint::isUdfps(uint32_t /* sensorId */) {
-    std::string device = android::base::GetProperty("ro.product.device", "");
-    return device == "equuleus" || device == "ursa";
-}
-
-Return<void> BiometricsFingerprint::onFingerDown(uint32_t /* x */, uint32_t /* y */,
-                                                float /* minor */, float /* major */) {
-    set(DISPPARAM_PATH, DISPPARAM_HBM_FOD_ON);
-    mDevice->extCmd(mDevice, COMMAND_NIT, PARAM_NIT_630_FOD);
-    set(FOD_STATUS_PATH, FOD_STATUS_ON);
-    return Void();
-}
-
-Return<void> BiometricsFingerprint::onFingerUp() {
-    set(DISPPARAM_PATH, DISPPARAM_HBM_FOD_OFF);
-    mDevice->extCmd(mDevice, COMMAND_NIT, PARAM_NIT_NONE);
-    set(FOD_STATUS_PATH, FOD_STATUS_OFF);
-    return Void();
-}
-
-Return<bool> BiometricsFingerprint::isUdfps(uint32_t /* sensorId */) {
     return false;
 }
 
